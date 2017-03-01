@@ -2,6 +2,8 @@
 
 #include <iostream>
 #include <cmath>
+#include <cstdlib>
+#include <ctime>
 
 using std::cout;
 using std::endl;
@@ -16,25 +18,65 @@ UserInterface::mouseInfo UserInterface::mouse_;
 void UserInterface::Init(int argc, char* argv[], const string& title) {
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-  glutInitWindowSize(500, 500);
+  glutInitWindowSize(1200, 700);
   glutInitWindowPosition(10, 10);
   glutCreateWindow(title.c_str());
 
-  glutDisplayFunc(Display);
+}
+void UserInterface::Init2()
+{
   glutReshapeFunc(Reshape);
   glutMouseFunc(MouseButtonHandler);
   glutMotionFunc(MouseMotionHandler);
 }
 
-void UserInterface::Display() {
+void UserInterface::truc()
+{
+  glutDisplayFunc(Display);
+}
+void UserInterface::truc2()
+{
+  glutDisplayFunc(Display2);
+}
+
+
+void UserInterface::Display(){
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLoadIdentity();
   SetCamera();
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  glShadeModel(GL_SMOOTH); 
 
-  DrawPlanes();
+
+  DrawCube(0,0,0,0.5);
+  DrawCube(0,0,0,1);
 
   glutSwapBuffers();
+}
+void UserInterface::Display2(){
+  //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  //glClear(GL_DEPTH_BUFFER_BIT);
+
+  glLoadIdentity();
+  SetCamera();
+  //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  glShadeModel(GL_SMOOTH); 
+
+
+  DrawPyramid(0,0,1,1,2);
+  DrawPyramid(0,0,1,1,-1);
+  DrawCube(0,0,0,0.5);
+  DrawCube(0,0,0,1);
+
+
+  glutSwapBuffers();
+}
+
+float ra()
+{
+  
+  float a =  (rand()%(100))/100.0;
+  return a;
 }
 
 void UserInterface::DrawPlanes() {
@@ -64,6 +106,120 @@ void UserInterface::DrawPlanes() {
   glVertex3d(1.0, 1.0, 0.0);
   glVertex3d(1.0,  0.0, 0.0);
   glEnd();
+  // Reset to WHITE
+  glColor3f(1.0, 1.0, 1.0);
+  glPopMatrix();
+}
+
+void UserInterface::DrawCube(float x, float y, float z, float arrete) {
+  
+  float ar = arrete/2;
+
+  srand(time(0));
+
+  glPushMatrix();
+  glScaled(10.0, 10.0, 10.0);
+  // x=0 plane in RED
+  glBegin(GL_QUADS);
+
+    glColor3f(ra(), ra(), ra());
+    glVertex3d(x - ar, y - ar, z - ar);
+    glVertex3d(x - ar, y - ar, z + ar);
+    glVertex3d(x - ar, y + ar, z + ar);
+    glVertex3d(x - ar, y + ar, z - ar);
+  // y=0 plane in GREEN
+    glColor3f(ra(), ra(), ra());
+    glVertex3d(x - ar, y - ar, z - ar);
+    glVertex3d(x + ar, y - ar, z - ar);
+    glVertex3d(x + ar, y - ar, z + ar);
+    glVertex3d(x - ar, y - ar, z + ar);
+  // z=0 plane in BLUE
+    glColor3f(ra(), ra(), ra());
+    glVertex3d( x - ar, y - ar, z - ar);
+    glVertex3d( x - ar, y + ar, z - ar);
+    glVertex3d( x + ar, y + ar, z - ar);
+    glVertex3d( x + ar, y - ar, z - ar);
+  //front in pink
+    glColor3f(ra(), ra(), ra());
+    glVertex3d( x - ar, y - ar, z + ar);
+    glVertex3d( x - ar, y + ar, z + ar);
+    glVertex3d( x + ar, y + ar, z + ar);
+    glVertex3d( x + ar, y - ar, z + ar);
+  
+
+  //top in yellow
+
+
+  // glColor3f(1.0, 1.0, 0.0);
+  // glBegin(GL_POLYGON);
+  // glVertex3d( x - ar, y + ar, z + ar);
+  // glVertex3d( x + ar, y + ar, z + ar);
+  // glVertex3d( x + ar, y + ar, z - ar);
+  // glVertex3d( x - ar, y + ar, z - ar);
+  // glEnd();
+
+  // glDisable(GL_DEPTH_TEST);
+
+  // glColor3f(1.0, 0.0, 0.0);
+  // glBegin(GL_LINE_LOOP);
+  // glVertex3d( x - ar, y + ar, z - ar);
+  // glVertex3d( x + ar, y + ar, z - ar);
+  // glVertex3d( x + ar, y + ar, z + ar);
+  // glVertex3d( x - ar, y + ar, z + ar);
+  // glEnd();
+  // glEnable(GL_DEPTH_TEST);
+
+    glColor3f(ra(), ra(), ra());
+    glVertex3d( x - ar, y + ar, z - ar);
+    glVertex3d( x + ar, y + ar, z - ar);
+    glVertex3d( x + ar, y + ar, z + ar);
+    glVertex3d( x - ar, y + ar, z + ar);
+    
+    glEnd();
+
+  // Reset to WHITE
+  glColor3f(1.0, 1.0, 1.0);
+  glPopMatrix();
+}
+
+void UserInterface::DrawPyramid(float x, float y, float z, float arrete, int mod) {
+  
+  float ar = arrete/2;
+
+  glPushMatrix();
+  glScaled(10.0, 10.0, 10.0);
+  // x=0 plane in RED
+
+  float ztop = z + mod*(0.5*arrete*(pow(2,0.5)));
+  glBegin(GL_TRIANGLES);
+
+    //front
+
+    glColor3f(ra(), ra(), ra());
+    glVertex3d(x, y, ztop);
+    glVertex3d(x - ar, y + ar, z);
+    glVertex3d(x + ar, y + ar, z);
+
+    //left
+    glColor3f(ra(), ra(), ra());
+    glVertex3d(x, y, ztop);
+    glVertex3d(x - ar, y + ar, z);
+    glVertex3d(x - ar, y - ar, z);
+    
+
+    //back
+    glColor3f(ra(), ra(), ra());
+    glVertex3d(x, y, ztop);
+    glVertex3d(x - ar, y - ar, z);
+    glVertex3d(x + ar, y - ar, z);
+  //front in pink
+    glColor3f(ra(), ra(), ra());
+    glVertex3d(x, y, ztop);
+    glVertex3d(x + ar, y - ar, z);
+    glVertex3d(x + ar, y + ar, z);
+    
+    glEnd();
+
   // Reset to WHITE
   glColor3f(1.0, 1.0, 1.0);
   glPopMatrix();

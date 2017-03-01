@@ -18,12 +18,23 @@ class UserInterface {
   UserInterface& operator=(UserInterface&&) = delete; // Move assign
   ~UserInterface() = delete;
 
+  static void DrawCube(float x, float y, float z, float arrete);
+  static void DrawPyramid(float x, float y, float z, float arrete, int mod);
+
+  static void truc();
+  static void truc2();
+
+
+
   static void Init(int argc, char* argv[], const string&);
+  static void Init2();
   static void MainLoop();
 
  protected:
   static void Display();
+  static void Display2();
   static void DrawPlanes();
+
   static void Reshape(int w, int h);
   static void SetCamera();
   static void MouseButtonHandler(GLint button, GLint state, GLint x, GLint y);
